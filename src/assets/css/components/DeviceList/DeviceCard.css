@@ -1,0 +1,132 @@
+.device-card {
+  color: black;
+  width: 25%; 
+  height: 50%;
+  display: flex;
+  flex-direction: column; 
+  border-radius: 2rem;
+  padding: 0 2rem;
+  padding-top: 2rem;
+  box-shadow: rgba(0, 0, 0, 0.02) 0px 1px 3px 0px, rgba(27, 31, 35, 0.15) 0px 0px 0px 1px;
+}
+
+.device-card.on { 
+  background-color: var(--light-green);
+}
+
+.device-card.off { 
+  background-color: var(--light-grey);
+}
+
+.button {
+  cursor: pointer;
+}
+
+.card-header { 
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  width: 100%;
+}
+
+
+.status-card {
+  text-align: center;
+  font-size: 1.6rem;
+  color: white;
+  padding: 0.2rem 1rem;
+  border-radius: 0.5rem;
+  font-weight: bold;
+  align-self: center;
+}
+
+.status-card.on {
+  background-color: var(--dark-green);
+}
+
+.status-card.off {
+  background-color: var(--orange);
+}
+
+.device-name-container { 
+  margin-top: 1.2rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  width: 100%;
+  font-size: 2rem;
+  font-weight: bold;
+  margin-bottom: 0;
+}
+
+.card-body { 
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.ac-img-container { 
+  width: 40%;
+}
+
+.ac-img-container > img {
+  max-width: 100%;
+  max-height: 100%;
+}
+
+.stats-container { 
+  width: 50%;
+  height: 55%;
+  display: flex; 
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.4rem;
+  gap: 1rem;
+  box-shadow: rgba(0, 0, 0, 0.02) 0px 1px 3px 0px, rgba(27, 31, 35, 0.15) 0px 0px 0px 1px;
+  border-radius: 1rem;
+  background-color: var(--cream);
+}
+
+.stat { 
+  display: flex; 
+  flex-direction: row;
+  gap: 1rem;
+  justify-items: center;
+  align-items: center;
+  font-weight: 700;
+
+}
+
+.stat-icon.temp { 
+  font-size: 1.8rem;
+  color: var(--red);
+}
+
+.stat-icon.humidity { 
+  font-size: 1.8rem;
+  color: var(--blue);
+}
+
+.card-footer { 
+  display: flex;
+  flex-direction: column;
+  height: 20%;
+  border-radius: 1rem;
+}
+
+.card-button-group { 
+  display: flex; 
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  width: 100%;
+  
+}
+
+
+
