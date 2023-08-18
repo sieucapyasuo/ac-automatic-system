@@ -7,36 +7,21 @@ import DeviceThermostatIcon from '@mui/icons-material/DeviceThermostat'
 import AcUnitIcon from '@mui/icons-material/AcUnit'
 import WindPowerIcon from '@mui/icons-material/WindPower'
 
-import ACOn from '@/assets/images/air-conditioner_on.png'
 import ACOff from '@/assets/images/air-conditioner_off.png'
 import '@/assets/css/components/DeviceList/DeviceCard.css'
 
-import { BRANDS, STATUS, MODE } from '@/constants/enum'
-import { useRef } from 'react'
+import { IDevice } from '@/models/deviceModel'
 
 interface DeviceCardProp {
-  device: {
-    status: STATUS
-    brand: BRANDS
-    name: string
-    humidity: string
-    temp: string
-    mode: MODE
-  }
+  device: IDevice
 }
 
-const DeviceCard = ({ device }: DeviceCardProp): JSX.Element => {
-  const tempControl = useRef<HTMLInputElement>(null)
-  console.log(tempControl.current?.value)
+const DeviceCardOff = ({ device }: DeviceCardProp): JSX.Element => {
   return (
-    <div className={`device-card ${device.status == STATUS.ON ? 'on' : 'off'}`}>
+    <div className='device-card off'>
       <div className='card-header'>
         <Brand brandName={device.brand} />
-        <div
-          className={`status-card ${device.status == STATUS.ON ? 'on' : 'off'}`}
-        >
-          {device.status}
-        </div>
+        <div className='status-card'>{device.status}</div>
         <div className='device-name-container'>
           <div className='device-name'>{device.name}</div>
           <EditIcon className='edit-icon' />
@@ -44,17 +29,9 @@ const DeviceCard = ({ device }: DeviceCardProp): JSX.Element => {
       </div>
       <div className='card-body'>
         <div className='ac-img-container'>
-          {device.status == STATUS.ON ? (
-            <img src={ACOn} />
-          ) : (
-            <img src={ACOff} />
-          )}
+          <img src={ACOff} />
         </div>
-        <div
-          className={`fan-controler-container ${
-            device.status == STATUS.ON ? '' : 'disable'
-          }`}
-        >
+        <div className='fan-controler-container disable'>
           <WindPowerIcon className='stat-icon fan' />
           <div className='fan-speed'>HIGH</div>
           <div className='fan-speed'>MED</div>
@@ -63,39 +40,37 @@ const DeviceCard = ({ device }: DeviceCardProp): JSX.Element => {
         <div className='stats-container'>
           <div className='stat'>
             <WaterDropIcon className='stat-icon humidity' />
-            <span>{device.humidity}</span>
+            <span>--</span>
           </div>
           <div className='stat'>
             <DeviceThermostatIcon className='stat-icon temp' />
-            <span>{device.temp}</span>
+            <span>--</span>
           </div>
           <hr className='stat-divider'></hr>
           <div className='stat'>
             <AcUnitIcon className='stat-icon humidity' />
-            <span>{device.temp}</span>
+            <span>--</span>
           </div>
         </div>
       </div>
-      <div
-        className={`slide-bar-container ${
-          device.status == STATUS.ON ? '' : 'disable'
-        }`}
-      >
+      <div className={'slide-bar-container disable'}>
         <AcUnitIcon className='stat-icon temp' />
         <input
-          disabled={device.status == STATUS.ON ? false : true}
+          disabled={true}
           id='temperature-bar'
           type='range'
           min='18'
           max='30'
           step='1'
-          ref={tempControl}
         />
         <AcUnitIcon className='stat-icon humidity' />
       </div>
       <div className='card-footer'>
         <div className='card-button-group'>
-          <ModeButtonGroup mode={device.mode} />
+          <ModeButtonGroup
+            mode={device.currentProfile}
+            status={device.status}
+          />
           <PowerButtonGroup status={device.status} />
         </div>
       </div>
@@ -103,4 +78,4 @@ const DeviceCard = ({ device }: DeviceCardProp): JSX.Element => {
   )
 }
 
-export default DeviceCard
+export default DeviceCardOff

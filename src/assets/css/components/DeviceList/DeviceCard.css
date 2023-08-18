@@ -14,8 +14,16 @@
   background-color: var(--light-green);
 }
 
+.device-card.on>.card-header>.status-card {
+  background-color: var(--dark-green);
+}
+
 .device-card.off {
   background-color: var(--light-grey);
+}
+
+.device-card.off>.card-header>.status-card {
+  background-color: var(--orange);
 }
 
 .button {
@@ -39,14 +47,6 @@
   border-radius: 0.5rem;
   font-weight: bold;
   align-self: center;
-}
-
-.status-card.on {
-  background-color: var(--dark-green);
-}
-
-.status-card.off {
-  background-color: var(--orange);
 }
 
 .device-name-container {
@@ -95,10 +95,15 @@
   display: flex;
   flex-direction: row;
   gap: 0.5rem;
-  justify-items: center;
-  align-items: center;
+  align-items: flex-start;
+  justify-content: center;
   font-weight: 700;
+  width: 65% ;
+  
+}
 
+.stat > span { 
+  flex: 1;
 }
 
 .stat-divider {
@@ -132,7 +137,8 @@
   box-sizing: border-box;
   padding: 0.5rem;
 }
-.fan-controler-container.disable { 
+
+.fan-controler-container.disable {
   background-color: var(--light-grey);
   color: var(--dark-grey) !important;
 }
@@ -302,6 +308,6 @@ input[type=range]:focus::-ms-fill-upper {
   background-color: var(--dark-grey) !important;
 }
 
-.slide-bar-container.disable > input[type=range]::-webkit-slider-runnable-track { 
+.slide-bar-container.disable>input[type=range]::-webkit-slider-runnable-track {
   background-color: var(--light-grey) !important;
 }
