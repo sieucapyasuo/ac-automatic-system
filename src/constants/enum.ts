@@ -1,4 +1,4 @@
-export const enum BRAND {
+export enum BRAND {
   TOSHIBA = 'TOSHIBA',
   MITSUBISHI = 'MITSUBISHI',
   DAIKIN = 'DAIKIN',
@@ -14,15 +14,14 @@ export const enum STATUS {
   INACTIVE = 'INACTIVE'
 }
 
-export const enum MODE {
+export enum MODE {
   COOLING = 'COOLING',
   DEFAULT = 'DEFAULT',
   MOISTURING = 'MOISTURING'
 }
 
-export const enum FANSPEED {
+export enum FANSPEED {
   LOW = 'LOW',
   MEDIUM = 'MEDIUM',
-  HIGH = 'HIGH',
-  NONE = 'NONE'
+  HIGH = 'HIGH'
 }
