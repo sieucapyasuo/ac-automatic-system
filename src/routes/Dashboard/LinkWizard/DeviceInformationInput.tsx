@@ -1,4 +1,8 @@
 import { useRef } from 'react'
+import { useNavigate } from 'react-router-dom'
+
+import Swal, { SweetAlertOptions } from 'sweetalert2'
+import { loading, successAlert, errorAlert } from '@/utils/sweetAlert'
 
 import AcUnitIcon from '@mui/icons-material/AcUnit'
 import OpacityIcon from '@mui/icons-material/Opacity'
@@ -7,15 +11,33 @@ import DeviceThermostatIcon from '@mui/icons-material/DeviceThermostat'
 import WindPowerIcon from '@mui/icons-material/WindPower'
 
 import { FANSPEED, BRAND, MODE } from '@/constants/enum'
-import {
-  LinkDeviceRequest,
-  initialLinkDeviceRequest
-} from '@/models/linkDeviceRequest'
+import { LinkDeviceRequest } from '@/models/linkDeviceRequest'
+
+import linkNewDevice from '@/services/linkNewDevice'
 
 import '@/assets/css/components/LinkWizard/DeviceInformationInput.css'
 
 const DeviceInformationInput: React.FC = () => {
-  const device = useRef<LinkDeviceRequest>(initialLinkDeviceRequest)
+  const navigate = useNavigate()
+  const device = useRef<LinkDeviceRequest>({
+    userId: 'empty',
+    name: '',
+    brand: BRAND.TOSHIBA,
+    profile: {
+      COOLING: {
+        temp: 19,
+        fan: FANSPEED.HIGH
+      },
+      DEFAULT: {
+        temp: 24,
+        fan: FANSPEED.MEDIUM
+      },
+      MOISTURING: {
+        temp: 27,
+        fan: FANSPEED.LOW
+      }
+    }
+  })
 
   const onFanSpeedChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const profile = event.target.id as MODE
@@ -27,16 +49,31 @@ const DeviceInformationInput: React.FC = () => {
     const profile = event.target.id as MODE
 
     device.current.profile[profile].temp = parseInt(event.target.value)
-    console.log(device.current.profile)
   }
 
   const onNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     device.current.name = event.target.value
-    console.log(device.current.name)
   }
 
   const onBrandChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     device.current.brand = event.target.value as BRAND
+  }
+
+  const onSubmit = async () => {
+    if (device.current.name.trim() != '') {
+      Swal.fire(loading)
+      try {
+        await linkNewDevice(device.current)
+        Swal.fire(
+          successAlert('Successfully linked new device !') as SweetAlertOptions
+        )
+        setTimeout(() => navigate('/devices'), 1000)
+      } catch (error) {
+        Swal.fire(errorAlert('Failed to link new device') as SweetAlertOptions)
+      }
+    } else {
+      Swal.fire(errorAlert('Missing name !') as SweetAlertOptions)
+    }
   }
 
   return (
@@ -162,7 +199,9 @@ const DeviceInformationInput: React.FC = () => {
           </div>
         </div>
       </div>
-      <div className='submit-button'>SUBMIT</div>
+      <div className='submit-button' onClick={onSubmit}>
+        SUBMIT
+      </div>
     </div>
   )
 }
