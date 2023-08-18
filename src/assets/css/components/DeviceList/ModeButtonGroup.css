@@ -8,6 +8,11 @@
 
 }
 
+.mode-button-group.disable > .mode-button { 
+  background-color: var(--grey);
+  color: var(--dark-grey);
+}
+
 .mode-button { 
   display: flex;
   width: 24%;
@@ -29,10 +34,6 @@
   color: var(black);
 }
 
-.mode-button.disable { 
-  background-color: var(--grey);
-  color: var(--dark-grey);
-}
 
 .mode-icon { 
   font-size: 1.8rem;

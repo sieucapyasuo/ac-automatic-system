@@ -4,15 +4,16 @@ import AcUnitIcon from '@mui/icons-material/AcUnit'
 import OpacityIcon from '@mui/icons-material/Opacity'
 import SettingsIcon from '@mui/icons-material/Settings'
 
-import { MODE } from '@/constants/enum'
+import { MODE, STATUS } from '@/constants/enum'
 
 import '@/assets/css/components/DeviceList/ModeButtonGroup.css'
 
 interface ModeBtnGrProp {
   mode: MODE
+  status: STATUS
 }
 
-const ModeButtonGroup = ({ mode }: ModeBtnGrProp): JSX.Element => {
+const ModeButtonGroup = ({ mode, status }: ModeBtnGrProp): JSX.Element => {
   const [currentMode, setCurrentMode] = useState<MODE>(mode)
 
   const onModeClick = (mode: MODE): void => {
@@ -20,14 +21,14 @@ const ModeButtonGroup = ({ mode }: ModeBtnGrProp): JSX.Element => {
   }
 
   return (
-    <div className='mode-button-group'>
+    <div
+      className={`mode-button-group ${status != STATUS.ON ? 'disable' : ''}`}
+    >
       <div
         className={`mode-button button ${
           currentMode == MODE.COOLING ? 'active' : 'inactive'
-        } ${currentMode == MODE.NONE ? 'disable' : ''}`}
-        onClick={
-          currentMode != MODE.NONE ? () => onModeClick(MODE.COOLING) : undefined
-        }
+        }`}
+        onClick={() => onModeClick(MODE.COOLING)}
       >
         <AcUnitIcon className='mode-icon' />
         <span>Cooling</span>
@@ -35,11 +36,8 @@ const ModeButtonGroup = ({ mode }: ModeBtnGrProp): JSX.Element => {
       <div
         className={`mode-button button ${
           currentMode == MODE.DEFAULT ? 'active' : 'inactive'
-        } ${currentMode == MODE.NONE ? 'disable' : ''}
-        `}
-        onClick={
-          currentMode != MODE.NONE ? () => onModeClick(MODE.DEFAULT) : undefined
-        }
+        }`}
+        onClick={() => onModeClick(MODE.DEFAULT)}
       >
         <SettingsIcon className='mode-icon' />
         <span>Default</span>
@@ -47,12 +45,8 @@ const ModeButtonGroup = ({ mode }: ModeBtnGrProp): JSX.Element => {
       <div
         className={`mode-button button ${
           currentMode == MODE.MOISTURING ? 'active' : 'inactive'
-        } ${currentMode == MODE.NONE ? 'disable' : ''}`}
-        onClick={
-          currentMode != MODE.NONE
-            ? () => onModeClick(MODE.MOISTURING)
-            : undefined
-        }
+        }`}
+        onClick={() => onModeClick(MODE.MOISTURING)}
       >
         <OpacityIcon className='mode-icon' />
         <span>Moisturing</span>
