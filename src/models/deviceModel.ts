@@ -1,11 +1,11 @@
 import { BRAND, FANSPEED, MODE, STATUS } from '@/constants/enum'
 
-interface IProfile {
+export interface IProfile {
   temp: number
   fan: FANSPEED
 }
 
-export interface IDevice extends Document {
+export interface IDevice {
   userId: string
   name: string
   status: STATUS
