@@ -4,12 +4,15 @@ import PowerButtonGroup from './PowerButtonGroup'
 import EditIcon from '@mui/icons-material/Edit'
 import WaterDropIcon from '@mui/icons-material/WaterDrop'
 import DeviceThermostatIcon from '@mui/icons-material/DeviceThermostat'
+import AcUnitIcon from '@mui/icons-material/AcUnit'
+import WindPowerIcon from '@mui/icons-material/WindPower'
 
 import ACOn from '@/assets/images/air-conditioner_on.png'
 import ACOff from '@/assets/images/air-conditioner_off.png'
 import '@/assets/css/components/DeviceList/DeviceCard.css'
 
 import { BRANDS, STATUS, MODE } from '@/constants/enum'
+import { useRef } from 'react'
 
 interface DeviceCardProp {
   device: {
@@ -23,6 +26,8 @@ interface DeviceCardProp {
 }
 
 const DeviceCard = ({ device }: DeviceCardProp): JSX.Element => {
+  const tempControl = useRef<HTMLInputElement>(null)
+  console.log(tempControl.current?.value)
   return (
     <div className={`device-card ${device.status == STATUS.ON ? 'on' : 'off'}`}>
       <div className='card-header'>
@@ -45,6 +50,16 @@ const DeviceCard = ({ device }: DeviceCardProp): JSX.Element => {
             <img src={ACOff} />
           )}
         </div>
+        <div
+          className={`fan-controler-container ${
+            device.status == STATUS.ON ? '' : 'disable'
+          }`}
+        >
+          <WindPowerIcon className='stat-icon fan' />
+          <div className='fan-speed'>HIGH</div>
+          <div className='fan-speed'>MED</div>
+          <div className='fan-speed'>LOW</div>
+        </div>
         <div className='stats-container'>
           <div className='stat'>
             <WaterDropIcon className='stat-icon humidity' />
@@ -54,7 +69,29 @@ const DeviceCard = ({ device }: DeviceCardProp): JSX.Element => {
             <DeviceThermostatIcon className='stat-icon temp' />
             <span>{device.temp}</span>
           </div>
+          <hr className='stat-divider'></hr>
+          <div className='stat'>
+            <AcUnitIcon className='stat-icon humidity' />
+            <span>{device.temp}</span>
+          </div>
         </div>
+      </div>
+      <div
+        className={`slide-bar-container ${
+          device.status == STATUS.ON ? '' : 'disable'
+        }`}
+      >
+        <AcUnitIcon className='stat-icon temp' />
+        <input
+          disabled={device.status == STATUS.ON ? false : true}
+          id='temperature-bar'
+          type='range'
+          min='18'
+          max='30'
+          step='1'
+          ref={tempControl}
+        />
+        <AcUnitIcon className='stat-icon humidity' />
       </div>
       <div className='card-footer'>
         <div className='card-button-group'>
