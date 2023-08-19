@@ -6,12 +6,17 @@ import '@/assets/css/components/DeviceList/PowerButtonGroup.css'
 
 interface PowerButtonGroupProp {
   status: STATUS
+  onClick: () => void
 }
 
-const PowerButtonGroup = ({ status }: PowerButtonGroupProp): JSX.Element => {
+const PowerButtonGroup = ({
+  status,
+  onClick
+}: PowerButtonGroupProp): JSX.Element => {
   return (
     <div className='power-button-group'>
       <div
+        onClick={onClick}
         className={`power-button button ${status == STATUS.ON ? 'on' : 'off'}`}
       >
         <PowerSettingsNewIcon className='power-icon' />

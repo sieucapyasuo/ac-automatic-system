@@ -8,7 +8,7 @@ export enum BRAND {
   PANASONIC = 'PANASONIC'
 }
 
-export const enum STATUS {
+export enum STATUS {
   ON = 'ON',
   OFF = 'OFF',
   INACTIVE = 'INACTIVE'

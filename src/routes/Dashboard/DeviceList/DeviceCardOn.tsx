@@ -1,4 +1,5 @@
 import { useRef, useState } from 'react'
+import debounce from 'lodash/debounce'
 
 import Brand from './Brand'
 import ModeButtonGroup from './ModeButtonGroup'
@@ -12,27 +13,118 @@ import WindPowerIcon from '@mui/icons-material/WindPower'
 import ACOn from '@/assets/images/air-conditioner_on.png'
 import '@/assets/css/components/DeviceList/DeviceCard.css'
 
+import sendSignal from '@/services/sendSignal'
+
 import { IDevice } from '@/models/deviceModel'
-import { FANSPEED } from '@/constants/enum'
+import { FANSPEED, MODE, STATUS } from '@/constants/enum'
+import SendSignalRequest from '@/models/sendSignalRequest'
 
 interface DeviceCardProp {
   device: IDevice
+  updateDeviceList: (device: IDevice) => void
 }
 
-const DeviceCardOn = ({ device }: DeviceCardProp): JSX.Element => {
+const DeviceCardOn = ({
+  device,
+  updateDeviceList
+}: DeviceCardProp): JSX.Element => {
   const tempControl = useRef<HTMLInputElement>(null)
   const [fan, setFan] = useState<FANSPEED>(device.fan)
   const [temp, setTemp] = useState<number>(device.temp)
+  const [isLoading, setIsLoading] = useState<boolean>(false)
 
-  const onTempControlChange = () => {
-    setTemp(Number(tempControl.current!.value))
+  const craftSendSignalRequest = (optionalPara: {
+    status?: STATUS
+    temp?: number
+    profile?: MODE
+    fan?: FANSPEED
+  }): SendSignalRequest => {
+    return {
+      deviceId: device._id,
+      userId: 'test',
+      status: optionalPara.status || STATUS.ON,
+      profile: optionalPara.profile || device.currentProfile,
+      temp: optionalPara.temp || device.temp,
+      fan: optionalPara.fan || device.fan
+    }
+  }
+
+  const onClickOff = async () => {
+    try {
+      setIsLoading(true)
+      updateDeviceList({ ...device, status: STATUS.OFF })
+
+      await sendSignal(craftSendSignalRequest({ status: STATUS.OFF }))
+    } catch (e) {
+      console.log(e)
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
+  const debounceTempControl = debounce(() => onTempControlChange(), 500)
+
+  const onTempControlChange = async () => {
+    setIsLoading(true)
+    const newTemp: number = Number(tempControl.current!.value)
+    setTemp(newTemp)
+
+    try {
+      await sendSignal(craftSendSignalRequest({ temp: newTemp }))
+    } catch (e) {
+      console.log(e)
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
+  const onFanChange = async (fan: FANSPEED) => {
+    setIsLoading(true)
+    setFan(fan)
+    try {
+      await sendSignal(craftSendSignalRequest({ fan: fan }))
+    } catch (e) {
+      console.log(e)
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
+  const onModeChange = async (mode: MODE) => {
+    setIsLoading(true)
+    setFan(device.profile[mode].fan)
+    setTemp(device.profile[mode].temp)
+    tempControl.current!.value = device.profile[mode].temp.toString()
+
+    try {
+      await sendSignal(
+        craftSendSignalRequest({
+          profile: mode,
+          temp: device.profile[mode].temp,
+          fan: device.profile[mode].fan
+        })
+      )
+    } catch (e) {
+      console.log(e)
+    } finally {
+      setIsLoading(false)
+    }
   }
 
   return (
     <div className='device-card on'>
       <div className='card-header'>
         <Brand brandName={device.brand} />
-        <div className='status-card'>{device.status}</div>
+
+        <div className='status-card'>
+          {isLoading == true ? (
+            <div className='spinner-container'>
+              <div className='loading-spinner'></div>
+            </div>
+          ) : (
+            device.status
+          )}
+        </div>
         <div className='device-name-container'>
           <div className='device-name'>{device.name}</div>
           <EditIcon className='edit-icon' />
@@ -46,19 +138,19 @@ const DeviceCardOn = ({ device }: DeviceCardProp): JSX.Element => {
           <WindPowerIcon className='stat-icon fan' />
           <div
             className={`fan-speed ${fan == FANSPEED.HIGH ? 'current' : ''}`}
-            onClick={() => setFan(FANSPEED.HIGH)}
+            onClick={() => onFanChange(FANSPEED.HIGH)}
           >
             HIGH
           </div>
           <div
             className={`fan-speed ${fan == FANSPEED.MEDIUM ? 'current' : ''}`}
-            onClick={() => setFan(FANSPEED.MEDIUM)}
+            onClick={() => onFanChange(FANSPEED.MEDIUM)}
           >
             MED
           </div>
           <div
             className={`fan-speed ${fan == FANSPEED.LOW ? 'current' : ''}`}
-            onClick={() => setFan(FANSPEED.LOW)}
+            onClick={() => onFanChange(FANSPEED.LOW)}
           >
             LOW
           </div>
@@ -66,11 +158,11 @@ const DeviceCardOn = ({ device }: DeviceCardProp): JSX.Element => {
         <div className='stats-container'>
           <div className='stat'>
             <WaterDropIcon className='stat-icon humidity' />
-            <span>{device.humidity}%</span>
+            <span>{device.humidity == -1 ? '--' : device.humidity}%</span>
           </div>
           <div className='stat'>
             <DeviceThermostatIcon className='stat-icon temp' />
-            <span>{device.envTemp}°C</span>
+            <span>{device.envTemp == -1 ? '--' : device.envTemp}°C</span>
           </div>
           <hr className='stat-divider'></hr>
           <div className='stat'>
@@ -80,7 +172,7 @@ const DeviceCardOn = ({ device }: DeviceCardProp): JSX.Element => {
         </div>
       </div>
       <div className='slide-bar-container'>
-        <AcUnitIcon className='stat-icon temp' />
+        <AcUnitIcon className='stat-icon humidity' />
         <input
           id='temperature-bar'
           type='range'
@@ -89,17 +181,18 @@ const DeviceCardOn = ({ device }: DeviceCardProp): JSX.Element => {
           step='1'
           ref={tempControl}
           defaultValue={temp}
-          onChange={onTempControlChange}
+          onChange={debounceTempControl}
         />
-        <AcUnitIcon className='stat-icon humidity' />
+        <AcUnitIcon className='stat-icon temp' />
       </div>
       <div className='card-footer'>
         <div className='card-button-group'>
           <ModeButtonGroup
             mode={device.currentProfile}
             status={device.status}
+            onModeChange={onModeChange}
           />
-          <PowerButtonGroup status={device.status} />
+          <PowerButtonGroup status={device.status} onClick={onClickOff} />
         </div>
       </div>
     </div>

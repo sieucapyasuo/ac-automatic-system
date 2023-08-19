@@ -11,13 +11,19 @@ import '@/assets/css/components/DeviceList/ModeButtonGroup.css'
 interface ModeBtnGrProp {
   mode: MODE
   status: STATUS
+  onModeChange: (mode: MODE) => void
 }
 
-const ModeButtonGroup = ({ mode, status }: ModeBtnGrProp): JSX.Element => {
+const ModeButtonGroup = ({
+  mode,
+  status,
+  onModeChange
+}: ModeBtnGrProp): JSX.Element => {
   const [currentMode, setCurrentMode] = useState<MODE>(mode)
 
   const onModeClick = (mode: MODE): void => {
     setCurrentMode(mode)
+    onModeChange(mode)
   }
 
   return (
