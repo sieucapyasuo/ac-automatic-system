@@ -15,6 +15,16 @@ import { STATUS } from '@/constants/enum'
 const DeviceList: React.FC = () => {
   const [deviceList, setDeviceList] = useState<IDevice[]>([])
 
+  const updateDeviceList = (device: IDevice) => {
+    console.log(device)
+    const newDeviceList = deviceList.map((d) => {
+      if (d._id == device._id) return device
+      else return d
+    })
+
+    setDeviceList(newDeviceList)
+  }
+
   useEffect(() => {
     Swal.fire(loading)
     getDeviceList()
@@ -33,9 +43,9 @@ const DeviceList: React.FC = () => {
     <div className='devices-container'>
       {deviceList.map((device) =>
         device.status == STATUS.ON ? (
-          <DeviceCardOn device={device} />
+          <DeviceCardOn device={device} updateDeviceList={updateDeviceList} />
         ) : (
-          <DeviceCardOff device={device} />
+          <DeviceCardOff device={device} updateDeviceList={updateDeviceList} />
         )
       )}
     </div>

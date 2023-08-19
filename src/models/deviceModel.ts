@@ -6,6 +6,7 @@ export interface IProfile {
 }
 
 export interface IDevice {
+  _id: string
   userId: string
   name: string
   status: STATUS

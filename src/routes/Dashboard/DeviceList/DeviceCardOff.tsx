@@ -10,13 +10,46 @@ import WindPowerIcon from '@mui/icons-material/WindPower'
 import ACOff from '@/assets/images/air-conditioner_off.png'
 import '@/assets/css/components/DeviceList/DeviceCard.css'
 
+import setDevice from '@/services/setDevice'
+import sendSignal from '@/services/sendSignal'
+
 import { IDevice } from '@/models/deviceModel'
+import { STATUS, MODE } from '@/constants/enum'
 
 interface DeviceCardProp {
   device: IDevice
+  updateDeviceList: (device: IDevice) => void
 }
 
-const DeviceCardOff = ({ device }: DeviceCardProp): JSX.Element => {
+const DeviceCardOff = ({
+  device,
+  updateDeviceList
+}: DeviceCardProp): JSX.Element => {
+  const onClickOn = async () => {
+    try {
+      await setDevice({ deviceId: device._id, userId: 'test' })
+
+      updateDeviceList({
+        ...device,
+        status: STATUS.ON,
+        currentProfile: MODE.DEFAULT,
+        temp: device.profile.DEFAULT.temp,
+        fan: device.profile.DEFAULT.fan
+      })
+
+      await sendSignal({
+        deviceId: device._id,
+        userId: 'test',
+        status: STATUS.ON,
+        profile: MODE.DEFAULT,
+        temp: device.profile.DEFAULT.temp,
+        fan: device.profile.DEFAULT.fan
+      })
+    } catch (e) {
+      console.log(e)
+    }
+  }
+
   return (
     <div className='device-card off'>
       <div className='card-header'>
@@ -70,8 +103,9 @@ const DeviceCardOff = ({ device }: DeviceCardProp): JSX.Element => {
           <ModeButtonGroup
             mode={device.currentProfile}
             status={device.status}
+            onModeChange={() => {}}
           />
-          <PowerButtonGroup status={device.status} />
+          <PowerButtonGroup status={device.status} onClick={onClickOn} />
         </div>
       </div>
     </div>
