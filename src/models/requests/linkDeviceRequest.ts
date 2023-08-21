@@ -1,4 +1,4 @@
-import { IProfile } from './deviceModel'
+import { IProfile } from '../deviceModel'
 import { BRAND, FANSPEED, MODE } from '@/constants/enum'
 
 export interface LinkDeviceRequest {

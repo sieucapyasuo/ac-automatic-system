@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react'
+import { useRef, useState, useEffect } from 'react'
 import debounce from 'lodash/debounce'
 
 import Brand from './Brand'
@@ -17,7 +17,8 @@ import sendSignal from '@/services/sendSignal'
 
 import { IDevice } from '@/models/deviceModel'
 import { FANSPEED, MODE, STATUS } from '@/constants/enum'
-import SendSignalRequest from '@/models/sendSignalRequest'
+import SendSignalRequest from '@/models/requests/sendSignalRequest'
+import getStats from '@/services/getStats'
 
 interface DeviceCardProp {
   device: IDevice
@@ -31,7 +32,23 @@ const DeviceCardOn = ({
   const tempControl = useRef<HTMLInputElement>(null)
   const [fan, setFan] = useState<FANSPEED>(device.fan)
   const [temp, setTemp] = useState<number>(device.temp)
+  const [envTemp, setEnvTemp] = useState<number>(device.envTemp)
+  const [humidity, setHumidity] = useState<number>(device.humidity)
   const [isLoading, setIsLoading] = useState<boolean>(false)
+
+  useEffect(() => {
+    const intervalId = setInterval(() => {
+      setIsLoading(true)
+      getStats(device._id).then((stats) => {
+        setEnvTemp(stats.temp)
+        setHumidity(stats.humidity)
+        setIsLoading(false)
+      })
+    }, 30000)
+    return () => {
+      clearInterval(intervalId)
+    }
+  }, [device._id])
 
   const craftSendSignalRequest = (optionalPara: {
     status?: STATUS
@@ -158,11 +175,11 @@ const DeviceCardOn = ({
         <div className='stats-container'>
           <div className='stat'>
             <WaterDropIcon className='stat-icon humidity' />
-            <span>{device.humidity == -1 ? '--' : device.humidity}%</span>
+            <span>{humidity == -1 ? '--' : humidity}%</span>
           </div>
           <div className='stat'>
             <DeviceThermostatIcon className='stat-icon temp' />
-            <span>{device.envTemp == -1 ? '--' : device.envTemp}°C</span>
+            <span>{envTemp == -1 ? '--' : envTemp}°C</span>
           </div>
           <hr className='stat-divider'></hr>
           <div className='stat'>

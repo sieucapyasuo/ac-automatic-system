@@ -1,7 +1,7 @@
 import axios from 'axios'
 
 import { apiUrl } from '@/constants/serverConfig'
-import { SetDeviceRequest } from '@/models/setDeviceRequest'
+import { SetDeviceRequest } from '@/models/requests/setDeviceRequest'
 
 const setDevice = async (requestBody: SetDeviceRequest) => {
   try {
