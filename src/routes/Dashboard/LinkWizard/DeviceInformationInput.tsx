@@ -11,7 +11,7 @@ import DeviceThermostatIcon from '@mui/icons-material/DeviceThermostat'
 import WindPowerIcon from '@mui/icons-material/WindPower'
 
 import { FANSPEED, BRAND, MODE } from '@/constants/enum'
-import { LinkDeviceRequest } from '@/models/linkDeviceRequest'
+import { LinkDeviceRequest } from '@/models/requests/linkDeviceRequest'
 
 import linkNewDevice from '@/services/linkNewDevice'
 

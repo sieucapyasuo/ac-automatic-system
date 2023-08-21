@@ -1,7 +1,7 @@
 import axios from 'axios'
 
 import { apiUrl } from '@/constants/serverConfig'
-import { LinkDeviceRequest } from '@/models/linkDeviceRequest'
+import { LinkDeviceRequest } from '@/models/requests/linkDeviceRequest'
 
 const linkNewDevice = async (requestBody: LinkDeviceRequest) => {
   try {

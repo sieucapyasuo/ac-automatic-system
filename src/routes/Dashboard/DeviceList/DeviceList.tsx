@@ -16,7 +16,6 @@ const DeviceList: React.FC = () => {
   const [deviceList, setDeviceList] = useState<IDevice[]>([])
 
   const updateDeviceList = (device: IDevice) => {
-    console.log(device)
     const newDeviceList = deviceList.map((d) => {
       if (d._id == device._id) return device
       else return d

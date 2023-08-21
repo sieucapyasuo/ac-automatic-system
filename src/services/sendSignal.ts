@@ -1,7 +1,7 @@
 import axios from 'axios'
 
 import { apiUrl } from '@/constants/serverConfig'
-import SendSignalRequest from '@/models/sendSignalRequest'
+import SendSignalRequest from '@/models/requests/sendSignalRequest'
 
 const sendSignal = async (requestBody: SendSignalRequest) => {
   try {
