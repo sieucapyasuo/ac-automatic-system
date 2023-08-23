@@ -16,6 +16,9 @@ import sendSignal from '@/services/sendSignal'
 import { IDevice } from '@/models/deviceModel'
 import { STATUS, MODE } from '@/constants/enum'
 
+import Swal from 'sweetalert2'
+import { loading } from '@/utils/sweetAlert'
+
 interface DeviceCardProp {
   device: IDevice
   updateDeviceList: (device: IDevice) => void
@@ -27,15 +30,8 @@ const DeviceCardOff = ({
 }: DeviceCardProp): JSX.Element => {
   const onClickOn = async () => {
     try {
+      Swal.fire(loading)
       await setDevice({ deviceId: device._id, userId: 'test' })
-
-      updateDeviceList({
-        ...device,
-        status: STATUS.ON,
-        currentProfile: MODE.DEFAULT,
-        temp: device.profile.DEFAULT.temp,
-        fan: device.profile.DEFAULT.fan
-      })
 
       await sendSignal({
         deviceId: device._id,
@@ -45,6 +41,16 @@ const DeviceCardOff = ({
         temp: device.profile.DEFAULT.temp,
         fan: device.profile.DEFAULT.fan
       })
+
+      updateDeviceList({
+        ...device,
+        status: STATUS.ON,
+        currentProfile: MODE.DEFAULT,
+        temp: device.profile.DEFAULT.temp,
+        fan: device.profile.DEFAULT.fan
+      })
+
+      Swal.close()
     } catch (e) {
       console.log(e)
     }
