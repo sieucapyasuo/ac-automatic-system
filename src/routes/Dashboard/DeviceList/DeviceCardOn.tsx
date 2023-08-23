@@ -14,11 +14,14 @@ import ACOn from '@/assets/images/air-conditioner_on.png'
 import '@/assets/css/components/DeviceList/DeviceCard.css'
 
 import sendSignal from '@/services/sendSignal'
+import getStats from '@/services/getStats'
 
 import { IDevice } from '@/models/deviceModel'
 import { FANSPEED, MODE, STATUS } from '@/constants/enum'
 import SendSignalRequest from '@/models/requests/sendSignalRequest'
-import getStats from '@/services/getStats'
+
+import Swal, { SweetAlertOptions } from 'sweetalert2'
+import { warningAlert } from '@/utils/sweetAlert'
 
 interface DeviceCardProp {
   device: IDevice
@@ -40,15 +43,23 @@ const DeviceCardOn = ({
     const intervalId = setInterval(() => {
       setIsLoading(true)
       getStats(device._id).then((stats) => {
-        setEnvTemp(stats.temp)
-        setHumidity(stats.humidity)
-        setIsLoading(false)
+        if (stats.temp >= 32) {
+          Swal.fire(
+            warningAlert(
+              `High Temperature on device ${device.name}`
+            ) as SweetAlertOptions
+          )
+        } else {
+          setEnvTemp(stats.temp)
+          setHumidity(stats.humidity)
+          setIsLoading(false)
+        }
       })
-    }, 30000)
+    }, 10000)
     return () => {
       clearInterval(intervalId)
     }
-  }, [device._id])
+  }, [device._id, device.name])
 
   const craftSendSignalRequest = (optionalPara: {
     status?: STATUS
@@ -179,7 +190,7 @@ const DeviceCardOn = ({
           </div>
           <div className='stat'>
             <DeviceThermostatIcon className='stat-icon temp' />
-            <span>{envTemp == -1 ? '--' : envTemp}°C</span>
+            <span>{envTemp == -1 ? '--' : Math.floor(envTemp)}°C</span>
           </div>
           <hr className='stat-divider'></hr>
           <div className='stat'>

@@ -42,9 +42,17 @@ const DeviceList: React.FC = () => {
     <div className='devices-container'>
       {deviceList.map((device) =>
         device.status == STATUS.ON ? (
-          <DeviceCardOn device={device} updateDeviceList={updateDeviceList} />
+          <DeviceCardOn
+            key={device._id}
+            device={device}
+            updateDeviceList={updateDeviceList}
+          />
         ) : (
-          <DeviceCardOff device={device} updateDeviceList={updateDeviceList} />
+          <DeviceCardOff
+            key={device._id}
+            device={device}
+            updateDeviceList={updateDeviceList}
+          />
         )
       )}
     </div>
